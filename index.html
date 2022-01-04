@@ -224,14 +224,80 @@ onValue(ktml,(snapshot)=>{
 
  
         
-const starCountRef = ref(db, 'taolao/temp' );
+
+window.onload = function () {
+
+var dps = []; // dataPoints
+var chart = new CanvasJS.Chart("chartContainer", {
+	title :{
+		text: "Biểu đồ nhiệt độ"
+	},
+	data: [{
+		type: "line",
+		dataPoints: dps
+	}]
+});
+
+var xVal = 0;
+var yVal = 100; 
+var updateInterval = 1000;
+var dataLength = 20; // number of dataPoints visible at any point
+
+var updateChart = function (count) {
+
+	count = count || 1;
+
+    
+  
+
+    
+
+
+
+    const starCountRef = ref(db, 'taolao/temp' );
 onValue(starCountRef, (snapshot) => {
  const nhietdonhan = snapshot.val();
-  document.getElementById("nhietdo").innerText = nhietdonhan+" °C";
+  
 
+ document.getElementById("nhietdo").innerText = nhietdonhan;
+ var c = nhietdonhan;
+  
+ for (var j = 0; j < count; j++) {
 
+const dd = Number(c)
+
+var d = new Date();
+
+xVal = d;
+
+yVal =dd;
+dps.push({
+    x: xVal,
+    y: yVal
+});
+xVal++;
+}
 
 });
+
+	
+
+	if (dps.length > dataLength) {
+		dps.shift();
+	}
+
+	chart.render();
+};
+
+updateChart(dataLength);
+setInterval(function(){updateChart()}, updateInterval);
+
+
+
+
+}
+
+  
 
    
 
